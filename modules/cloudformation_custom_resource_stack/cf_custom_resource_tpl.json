@@ -1,0 +1,129 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "LambdaArn": {
+      "Type": "String",
+      "Description": "Lambda to create your custom resource"
+    },
+    "DomainName": {
+      "Type": "String",
+      "Description": "Elasticsearch domain name"
+    },
+    "ESVersion": {
+      "Type": "String",
+      "Description": "Elasticsearch version"
+    },
+    "AutoSnapStartHour": {
+      "Type": "Number",
+      "Description": "When the automatic snapshot will start"
+    },
+    "DataNodeInstanceType": {
+      "Type": "String",
+      "Description": "ES data node instance type"
+    },
+    "DataNodeInstanceCount": {
+      "Type": "Number",
+      "Description": "Number of data node to create"
+    },
+    "MasterNodeInstanceType": {
+      "Type": "String",
+      "Description": "ES master node instance type"
+    },
+    "MasterNodeInstanceCount": {
+      "Type": "Number",
+      "Description": "Number of master node to create"
+    },
+    "VolumeType": {
+      "Type": "String",
+      "Description": "EBS Volume type"
+    },
+    "VolumeSize": {
+      "Type": "Number",
+      "Description": "Size of each EBS volume"
+    },
+    "SubnetIds": {
+      "Type": "CommaDelimitedList",
+      "Description": "The subnet ids to be used by ES"
+    },
+    "SecurityGroupIds": {
+      "Type": "CommaDelimitedList",
+      "Description": "The security group ids to be used by ES"
+    },
+    "VolumeKmsKeyId": {
+      "Type": "String",
+      "Description": "KMS key to encrypt EBS volumes"
+    },
+    "AccessPolicies": {
+      "Type": "String",
+      "Description": "The access policy to apply"
+    }
+  },
+  "Resources": {
+    "ESClusterFGA": {
+      "Type": "Custom::ESClusterFGA",
+      "Version": "1.0",
+      "Properties": {
+        "ServiceToken": {
+          "Ref": "LambdaArn"
+        },
+        "DomainName": {
+          "Ref": "DomainName"
+        },
+        "ESVersion": {
+          "Ref": "ESVersion"
+        },
+        "AutoSnapStartHour": {
+          "Ref": "AutoSnapStartHour"
+        },
+        "DataNodeInstanceType": {
+          "Ref": "DataNodeInstanceType"
+        },
+        "DataNodeInstanceCount": {
+          "Ref": "DataNodeInstanceCount"
+        },
+        "MasterNodeInstanceType": {
+          "Ref": "MasterNodeInstanceType"
+        },
+        "MasterNodeInstanceCount": {
+          "Ref": "MasterNodeInstanceCount"
+        },
+        "VolumeType": {
+          "Ref": "VolumeType"
+        },
+        "VolumeSize": {
+          "Ref": "VolumeSize"
+        },
+        "SubnetIds": {
+          "Ref": "SubnetIds"
+        },
+        "SecurityGroupIds": {
+          "Ref": "SecurityGroupIds"
+        },
+        "VolumeKmsKeyId": {
+          "Ref": "VolumeKmsKeyId"
+        },
+        "AccessPolicies": {
+          "Ref": "AccessPolicies"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "ARN": {
+      "Value": {
+        "Fn::GetAtt": [
+          "ESClusterFGA",
+          "ARN"
+        ]
+      }
+    },
+    "Endpoint": {
+      "Value": {
+        "Fn::GetAtt": [
+          "ESClusterFGA",
+          "Endpoint"
+        ]
+      }
+    }
+  }
+}
